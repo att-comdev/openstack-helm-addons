@@ -1,0 +1,80 @@
+# Copyright 2017 The Openstack-Helm Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Default values for elasticsearch.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicas: 
+  es_master: 3 #Minimum of 2 master is required for ES cluster to work properly.
+  es_data: 2
+  es_client: 2
+
+cluster_name: myesdb
+
+images:
+  elasticsearch: gcr.io/google_containers/elasticsearch:v2.4.1-2
+  pullPolicy: Always
+
+labels:
+  common:
+    component: elasticsearch
+  es_master:
+    role: master
+    name: es-master
+  es_data:
+    role: data
+    name: es-data
+  es_client:
+    role: client
+    name: es-client
+
+#heap size via JVM flags
+es_java_opts: 
+  es_master: "-Xms256m -Xmx256m"
+  es_data: "-Xms256m -Xmx256m"
+  es_client: "-Xms256m -Xmx256m"
+
+services:
+  client:
+    name: elasticsearch-logging
+    type: LoadBalancer
+  discovery:
+    name: elasticsearch-discovery
+  
+network:
+  client:
+    name: http
+    port: 9200
+    protocol: TCP
+  discovery:
+    name: transport
+    port: 9300
+    protocol: TCP
+    
+
+resources:
+  enabled: false
+  limits:
+    memory: "256Mi"
+    cpu: "500m"
+  requests:
+    memory: "256Mi"
+    cpu: "500m"
+
+  
+
+
+
+
