@@ -48,12 +48,12 @@ spec:
         - name: varlibdockercontainers
           mountPath: /var/lib/docker/containers
           readOnly: true
-        - name: etctdagent
+        - name: pod-etc-fluentd
           mountPath: /etc/td-agent
-        - name: tdagentconf
+        - name: fluentd-etc
           mountPath: /etc/td-agent/td-agent.conf
           subPath: td-agent.conf
-        - name: startsh
+        - name: fluentd-bin
           mountPath: /tmp/start.sh
           subPath: start.sh
           readOnly: true
@@ -64,11 +64,11 @@ spec:
       - name: varlibdockercontainers
         hostPath:
           path: /var/lib/docker/containers
-      - name: etctdagent
+      - name: pod-etc-fluentd
         emptyDir: {}
-      - name: tdagentconf
+      - name: fluentd-etc
         configMap:
           name: fluentd-etc
-      - name: startsh
+      - name: fluentd-bin
         configMap:
           name: fluentd-bin

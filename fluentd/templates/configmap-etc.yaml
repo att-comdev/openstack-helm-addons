@@ -21,11 +21,5 @@ data:
 {{ if .Values.conf.fluentd.override -}}
 {{ .Values.conf.fluentd.override | indent 4 }}
 {{- else -}}
-{{- if .Values.conf.fluentd.prefix -}}
-{{ .Values.conf.fluentd.prefix }}
-{{- end }}
 {{ tuple "etc/_td-agent.conf.tpl" . | include "helm-toolkit.template" | indent 4 }}
-{{- end }}
-{{- if .Values.conf.fluentd.append -}}
-{{ .Values.conf.fluentd.append }}
 {{- end }}

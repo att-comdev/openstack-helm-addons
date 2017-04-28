@@ -17,14 +17,12 @@
 # Declare variables to be passed into your templates.
 
 images:
-  fluentd: gcr.io/google_containers/fluentd-elasticsearch:1.22
+  fluentd: docker.io/srwilkers/fluentd:0.1.0
   pull_policy: IfNotPresent
 
 conf:
   fluentd:
     override:
-    prefix:
-    append:
 
 resources:
   enabled: false
@@ -34,4 +32,3 @@ resources:
   requests:
     memory: "128Mi"
     cpu: "500m"
-

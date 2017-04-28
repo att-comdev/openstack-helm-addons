@@ -119,16 +119,33 @@
   read_from_head true
 </source>
 
-# Example:
-# 2015-12-21 23:17:22,066 [salt.state       ][INFO    ] Completed state [net.ipv4.ip_forward] at time 23:17:22.066081
-<source>
-  type tail
-  format /^(?<time>[^ ]* [^ ,]*)[^\[]*\[[^\]]*\]\[(?<severity>[^ \]]*) *\] (?<message>.*)$/
-  time_format %Y-%m-%d %H:%M:%S
-  path /var/log/salt/minion
-  pos_file /var/log/es-salt.pos
-  tag salt
-</source>
+<filter kubernetes.**>
+  type kubernetes_metadata
+</filter>
+
+<filter kubernetes.var.lib.docker.containers.*.*.log>
+    type kubernetes_metadata
+</filter>
+
+<match **>
+   type elasticsearch
+   log_level info
+   include_tag_key true
+   host elasticsearch-logging
+   port 9200
+   logstash_format true
+   # Set the chunk limit the same as for fluentd-gcp.
+   buffer_chunk_limit 2M
+   # Cap buffer memory usage to 2MiB/chunk * 32 chunks = 64 MiB
+   buffer_queue_limit 32
+   flush_interval 5s
+   # Never wait longer than 5 minutes between retries.
+   max_retry_wait 30
+   # Disable the limit on the number of retries (retry forever).
+   disable_retry_limit
+   # Use multiple threads for processing.
+   num_threads 8
+</match>
 
 # Example:
 # Dec 21 23:17:22 gke-foo-1-1-4b5cbd14-node-4eoj startupscript: Finished running startup script /var/run/google.startup.script
@@ -278,27 +295,3 @@
   pos_file /var/log/es-cluster-autoscaler.log.pos
   tag cluster-autoscaler
 </source>
-
-<filter kubernetes.**>
-  type kubernetes_metadata
-</filter>
-
-<match **>
-   type elasticsearch
-   log_level info
-   include_tag_key true
-   host elasticsearch-logging
-   port 9200
-   logstash_format true
-   # Set the chunk limit the same as for fluentd-gcp.
-   buffer_chunk_limit 2M
-   # Cap buffer memory usage to 2MiB/chunk * 32 chunks = 64 MiB
-   buffer_queue_limit 32
-   flush_interval 5s
-   # Never wait longer than 5 minutes between retries.
-   max_retry_wait 30
-   # Disable the limit on the number of retries (retry forever).
-   disable_retry_limit
-   # Use multiple threads for processing.
-   num_threads 8
-</match>
