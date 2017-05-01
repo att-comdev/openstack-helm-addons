@@ -1,0 +1,9 @@
+*.lock
+*/*.lock
+*.tgz
+**/*.tgz
+.idea/
+**/_partials.tpl
+**/_globals.tpl
+dev/.vagrant
+dev/*.log
