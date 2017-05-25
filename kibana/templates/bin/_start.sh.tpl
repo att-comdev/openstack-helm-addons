@@ -12,11 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-description: Chart to run Kibana
-name: kibana
-version: 0.1.0
-home: https://www.elastic.co/products/kibana
-sources:
-  - https://github.com/elastic/kibana
-maintainers:
-  - name: OpenStack-Helm Authors
+#!/bin/bash
+
+set -ex
+
+/opt/kibana/bin/kibana

@@ -16,16 +16,41 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+config:
+  elasticsearch:
+    url: "http://elasticsearch-logging:9200"
+    preserve_host: false
+    ssl:
+      certificate:
+      key:
+  kibana:
+    index: ".kibana"
+    default_app_id: "discover"
+  server:
+    port: 5601
+    host: "0.0.0.0"
+    ssl:
+      enabled: false
+  logging:
+    dest: stdout
+    silent: false
+    quiet: false
+    verbose: false
+  il8n:
+    default_locale: en
+  ops:
+    interval:
+  pid:
+    file:
 
 images:
-  kibana: gcr.io/google_containers/kibana:v4.6.1-1
-  pull_policy: IfNotPresent
+  kibana: docker.io/kolla/ubuntu-source-kibana:3.0.3
+  pull_policy: Always
 
 network:
-  port: 5601
   target_port: ui
   node_port:
-    enabled: false
+    enabled: true
     port: 30905
 
 replicas:
@@ -47,7 +72,3 @@ upgrades:
   rolling_update:
     max_surge: 3
     max_unavailable: 1
-
-urls:
-  elasticsearch: "http://elasticsearch-logging:9200"
-  kibana: "/api/v1/proxy/namespaces/kube-system/services/kibana-logging"

@@ -23,7 +23,7 @@ metadata:
     kubernetes.io/name: "Kibana"
 spec:
   ports:
-  - port: {{ .Values.network.port }}
+  - port: {{ .Values.config.server.port }}
     protocol: TCP
     targetPort: {{ .Values.network.target_port }}
     {{ if .Values.network.node_port.enabled }}

@@ -20,6 +20,8 @@ metadata:
     k8s-app: kibana-logging
     kubernetes.io/cluster-service: "true"
     addonmanager.kubernetes.io/mode: Reconcile
+  annotations:
+    configmap-etc-hash: {{ tuple "configmap-etc.yaml" . | include "helm-toolkit.hash" }}
 spec:
   replicas: {{ .Values.replicas.kibana }}
   revisionHistoryLimit: {{ .Values.upgrades.revision_history }}
@@ -51,12 +53,28 @@ spec:
             cpu: {{ .Values.resources.kibana.limits.cpu }}
             memory: {{ .Values.resources.kibana.limits.memory }}
         {{ end }}
-        env:
-          - name: "ELASTICSEARCH_URL"
-            value: {{ .Values.urls.elasticsearch | quote }}
-          - name: "KIBANA_BASE_URL"
-            value: {{ .Values.urls.kibana | quote }}
+        command:
+          - bash
+          - /tmp/start.sh
         ports:
-        - containerPort: {{ .Values.network.port }}
+        - containerPort: {{ .Values.config.server.port }}
           name: {{ .Values.network.target_port }}
           protocol: TCP
+        volumeMounts:
+        - name: kibana-bin
+          mountPath: /tmp/start.sh
+          subPath: start.sh
+        - name: etckibana
+          mountPath: /opt/kibana/config
+        - name: kibana-etc
+          mountPath: /opt/kibana/config/kibana.yml
+          subPath: kibana.yml
+      volumes:
+      - name: kibana-bin
+        configMap:
+          name: kibana-bin
+      - name: etckibana
+        emptyDir: {}
+      - name: kibana-etc
+        configMap:
+          name: kibana-etc
