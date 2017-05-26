@@ -1,0 +1,8 @@
+
+    {
+        "access": "proxy",
+        "basicAuth": false,
+        "name": "prometheus",
+        "type": "prometheus",
+        "url": "http://prometheus-k8s.monitoring.svc:9090"
+    }
